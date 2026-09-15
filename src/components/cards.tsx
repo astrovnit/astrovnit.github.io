@@ -232,22 +232,38 @@ export function GalleryCard({ item, onOpen }: { item: GalleryItem; onOpen: () =>
     <button
       type="button"
       onClick={onOpen}
-      className="group border-border/70 relative block w-full overflow-hidden rounded-xl border text-left"
-      aria-label={`Open ${item.title}`}
+      className="card-lift group border-border/70 bg-card/60 relative block w-full overflow-hidden rounded-xl border text-left cursor-pointer"
+      aria-label={`Open photo from ${item.location || item.title}`}
     >
-      <img
-        src={item.image}
-        alt={item.description}
-        loading="lazy"
-        decoding="async"
-        width={1280}
-        height={853}
-        className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-      />
-      <span className="from-background/90 pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
-        <span className="font-display block text-sm font-medium">{item.title}</span>
-        <span className="text-muted-foreground block text-xs">{item.photographer}</span>
-      </span>
+      <div className="overflow-hidden aspect-16/10 w-full bg-secondary/30">
+        <img
+          src={item.image}
+          alt={item.description || item.location || item.title}
+          loading="lazy"
+          decoding="async"
+          width={1280}
+          height={853}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+        />
+      </div>
+      <div className="flex flex-col p-5 space-y-1.5 text-sm">
+        {item.event && (
+          <p className="leading-snug">
+            <span className="text-muted-foreground">Event: </span>
+            <span className="font-medium text-foreground">{item.event}</span>
+          </p>
+        )}
+        {item.location && (
+          <p className="leading-snug">
+            <span className="text-muted-foreground">Location: </span>
+            <span className="text-foreground">{item.location}</span>
+          </p>
+        )}
+        <p className="leading-snug">
+          <span className="text-muted-foreground">Clicked by: </span>
+          <span className="text-foreground">{item.photographer}</span>
+        </p>
+      </div>
     </button>
   );
 }

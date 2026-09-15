@@ -7,7 +7,6 @@ import { Reveal } from "@/components/Reveal";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -97,10 +96,24 @@ function GalleryPage() {
               <DialogTitle className="font-display mt-2 text-xl font-semibold">
                 {activeItem.title}
               </DialogTitle>
-              <p className="text-accent text-xs">By {activeItem.photographer}</p>
-              <DialogDescription className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                {activeItem.description}
-              </DialogDescription>
+              <div className="text-muted-foreground mt-3 space-y-1.5 text-sm leading-relaxed">
+                {activeItem.event && (
+                  <p>
+                    <span className="font-medium text-foreground">Event: </span>
+                    {activeItem.event}
+                  </p>
+                )}
+                {activeItem.location && (
+                  <p>
+                    <span className="font-medium text-foreground">Location: </span>
+                    {activeItem.location}
+                  </p>
+                )}
+                <p>
+                  <span className="font-medium text-foreground">Clicked by: </span>
+                  {activeItem.photographer}
+                </p>
+              </div>
             </DialogHeader>
           </DialogContent>
         ) : null}

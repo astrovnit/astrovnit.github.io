@@ -112,4 +112,6 @@ export interface GalleryItem {
   description: string;
   image: string;
   placeholder: boolean;
+  event?: string;
+  location?: string;
 }
