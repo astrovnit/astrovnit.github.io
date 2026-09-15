@@ -10,7 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const isGhPages = process.env["BUILD_TARGET"] === "gh-pages";
-const basePath = isGhPages ? (process.env["BASE_PATH"] || "/ashlesha-astronomy-club-website/") : "/";
+const basePath = isGhPages ? (process.env["BASE_PATH"] || "/") : "/";
 
 const ghPagesPostBuildPlugin: PluginOption = {
   name: "gh-pages-post-build",
@@ -34,7 +34,7 @@ const ghPagesPostBuildPlugin: PluginOption = {
       // Ensure 404.html exists for client-side routing fallback
       const indexPath = path.join(targetDir, "index.html");
       const notFoundPath = path.join(targetDir, "404.html");
-      if (fs.existsSync(indexPath) && !fs.existsSync(notFoundPath)) {
+      if (fs.existsSync(indexPath)) {
         fs.copyFileSync(indexPath, notFoundPath);
         console.log("[gh-pages-post-build] Created 404.html from index.html for SPA routing fallback.");
       }
