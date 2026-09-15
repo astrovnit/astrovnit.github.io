@@ -1,7 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
+import { GalleryCard, PlaceholderTag, Tag } from "@/components/cards";
+import { FilterBar } from "@/components/FilterBar";
 import { PageHeader } from "@/components/PageHeader";
 import { Reveal } from "@/components/Reveal";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { gallery, galleryCategories } from "@/data/gallery";
+import type { GalleryItem } from "@/data/types";
+import { formatDate } from "@/lib/utils";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -27,6 +39,14 @@ export const Route = createFileRoute("/gallery")({
 });
 
 function GalleryPage() {
+  const [category, setCategory] = useState("All");
+  const [activeItem, setActiveItem] = useState<GalleryItem | null>(null);
+
+  const filtered = useMemo(
+    () => (category === "All" ? gallery : gallery.filter((g) => g.category === category)),
+    [category],
+  );
+
   return (
     <>
       <PageHeader
@@ -36,31 +56,55 @@ function GalleryPage() {
       />
 
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <Reveal>
-          <div className="border-border/70 bg-card/50 relative overflow-hidden rounded-2xl border p-12 text-center sm:p-16">
-            <div
-              aria-hidden="true"
-              className="border-accent/20 absolute top-1/2 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed opacity-60"
-            />
-            <div
-              aria-hidden="true"
-              className="border-accent/10 absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full border opacity-40"
-            />
+        <FilterBar
+          options={galleryCategories}
+          value={category}
+          onChange={setCategory}
+          label="Filter gallery by category"
+        />
 
-            <div className="border-accent/40 bg-secondary/80 text-accent mx-auto grid h-12 w-12 place-items-center rounded-full border shadow-sm">
-              <Sparkles className="h-5 w-5" aria-hidden="true" />
-            </div>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((item, i) => (
+            <Reveal key={item.id} delay={i * 50}>
+              <GalleryCard item={item} onOpen={() => setActiveItem(item)} />
+            </Reveal>
+          ))}
+        </div>
 
-            <h2 className="font-display mt-6 text-2xl font-semibold sm:text-3xl">
-              Gallery clear for now.
-            </h2>
-            <p className="text-muted-foreground mx-auto mt-3 max-w-md text-base leading-relaxed">
-              Astrophotography, night sky captures, and stargazing session photos will be uploaded
-              here soon.
-            </p>
-          </div>
-        </Reveal>
+        {filtered.length === 0 ? (
+          <p className="text-muted-foreground mt-16 text-sm">No items in this category yet.</p>
+        ) : null}
       </section>
+
+      <Dialog open={!!activeItem} onOpenChange={(open) => !open && setActiveItem(null)}>
+        {activeItem ? (
+          <DialogContent className="border-border/80 bg-background/95 max-w-2xl backdrop-blur-xl">
+            <div className="overflow-hidden rounded-lg">
+              <img
+                src={activeItem.image}
+                alt={activeItem.description}
+                className="aspect-16/10 w-full object-cover"
+              />
+            </div>
+            <DialogHeader className="text-left">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <Tag>{activeItem.category}</Tag>
+                {activeItem.placeholder ? <PlaceholderTag /> : null}
+                <span className="text-muted-foreground font-mono text-xs">
+                  {formatDate(activeItem.date)}
+                </span>
+              </div>
+              <DialogTitle className="font-display mt-2 text-xl font-semibold">
+                {activeItem.title}
+              </DialogTitle>
+              <p className="text-accent text-xs">By {activeItem.photographer}</p>
+              <DialogDescription className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                {activeItem.description}
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        ) : null}
+      </Dialog>
     </>
   );
 }
