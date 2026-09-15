@@ -30,14 +30,21 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build static site for GitHub Pages
+        run: npm run build:pages
+
+      - name: Verify static output
+        run: |
+          test -f .output/public/index.html || { echo "ERROR: .output/public/index.html is missing!"; exit 1; }
+          test -f .output/public/404.html || { echo "ERROR: .output/public/404.html is missing!"; exit 1; }
+          test -d .output/public/assets || { echo "ERROR: .output/public/assets is missing!"; exit 1; }
+          echo "Static build verified successfully."
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -45,8 +52,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./.output/public
+          path: .output/public
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
