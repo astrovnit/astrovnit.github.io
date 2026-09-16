@@ -28,7 +28,7 @@ export function Tag({ children }: { children: React.ReactNode }) {
 export function EventCard({ event }: { event: AacEvent }) {
   return (
     <article className="card-lift group border-border/70 bg-card/60 flex h-full flex-col overflow-hidden rounded-xl border">
-      <Link to="/events/$slug" params={{ slug: event.slug }} className="block overflow-hidden">
+      <Link to="/events/$slug" params={{ slug: event.slug }} className="block overflow-hidden bg-black/40">
         <img
           src={event.image}
           alt=""
@@ -36,7 +36,7 @@ export function EventCard({ event }: { event: AacEvent }) {
           decoding="async"
           width={1280}
           height={853}
-          className="aspect-16/10 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+          className="aspect-16/10 w-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
         />
       </Link>
       <div className="flex flex-1 flex-col p-6">
@@ -58,7 +58,7 @@ export function EventCard({ event }: { event: AacEvent }) {
           <div className="flex items-center gap-2">
             <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
             <dt className="sr-only">Date</dt>
-            <dd>{formatDate(event.date)}</dd>
+            <dd>{event.displayDate || formatDate(event.date)}</dd>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-3.5 w-3.5" aria-hidden="true" />
@@ -86,7 +86,7 @@ export function EventCard({ event }: { event: AacEvent }) {
               rel="noreferrer noopener"
               className="border-border/70 hover:border-accent hover:text-accent ml-auto rounded-full border px-3.5 py-1.5 text-xs transition-colors"
             >
-              Register
+              {event.registrationUrl.includes("whatsapp") ? "Join Group" : "Register"}
             </a>
           ) : null}
         </div>

@@ -16,6 +16,7 @@ import sg1 from "@/assets/gallery/sg1.jpeg";
 import sg2 from "@/assets/gallery/sg2.jpeg";
 import sg3 from "@/assets/gallery/sg3.jpeg";
 import sg4 from "@/assets/gallery/sg4.jpeg";
+import orientationEvent from "@/assets/events/or.jpeg";
 
 export const img = {
   heroMilkyway,
@@ -25,6 +26,7 @@ export const img = {
   moon,
   startrails,
   simulation,
+  orientationEvent,
   gallery: {
     sarthak1,
     sarthak2,

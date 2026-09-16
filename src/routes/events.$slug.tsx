@@ -30,6 +30,28 @@ export const Route = createFileRoute("/events/$slug")({
   component: EventDetail,
 });
 
+function renderContentWithLinks(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="text-accent underline font-medium break-all hover:text-accent/80 transition-colors"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 function EventDetail() {
   const { event } = Route.useLoaderData();
   const related = events.filter((e) => e.slug !== event.slug).slice(0, 3);
@@ -59,6 +81,11 @@ function EventDetail() {
             <Tag>{event.category}</Tag>
             <Tag>{event.status}</Tag>
             {event.placeholder ? <PlaceholderTag /> : null}
+            {event.organizedBy && (
+              <span className="text-muted-foreground font-mono text-xs">
+                Organized by: {event.organizedBy}
+              </span>
+            )}
           </div>
           <h1 className="mt-5 text-4xl leading-tight font-semibold text-balance sm:text-5xl">
             {event.title}
@@ -67,7 +94,7 @@ function EventDetail() {
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" aria-hidden="true" />
               <dt className="sr-only">Date</dt>
-              <dd>{formatDate(event.date)}</dd>
+              <dd>{event.displayDate || formatDate(event.date)}</dd>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" aria-hidden="true" />
@@ -84,19 +111,21 @@ function EventDetail() {
       </header>
 
       <div className="mx-auto max-w-4xl px-5 py-16 lg:px-8">
-        <img
-          src={event.image}
-          alt={`Visual for ${event.title}`}
-          loading="lazy"
-          width={1280}
-          height={853}
-          className="border-border/70 aspect-16/9 w-full rounded-xl border object-cover"
-        />
+        <div className="overflow-hidden bg-black/40 flex justify-center rounded-xl border border-border/70">
+          <img
+            src={event.image}
+            alt={`Visual for ${event.title}`}
+            loading="lazy"
+            width={1131}
+            height={1600}
+            className="max-h-[640px] w-auto max-w-full object-contain"
+          />
+        </div>
 
-        <div className="mt-12 space-y-5 text-base leading-relaxed">
-          {event.description.map((p) => (
-            <p key={p} className="text-muted-foreground">
-              {p}
+        <div className="mt-12 space-y-5 text-base leading-relaxed whitespace-pre-line">
+          {event.description.map((p, idx) => (
+            <p key={idx} className="text-muted-foreground">
+              {renderContentWithLinks(p)}
             </p>
           ))}
         </div>
@@ -128,27 +157,29 @@ function EventDetail() {
             rel="noreferrer noopener"
             className="bg-primary text-primary-foreground hover:bg-primary/90 mt-12 inline-flex rounded-full px-6 py-3 text-sm font-medium transition-colors"
           >
-            Register for this event
+            {event.registrationUrl.includes("whatsapp") ? "Join WhatsApp Group" : "Register for this event"}
           </a>
         ) : null}
 
-        <section className="border-border/60 mt-20 border-t pt-10">
-          <h2 className="font-display text-xl font-semibold">Other events</h2>
-          <ul className="mt-6 space-y-3">
-            {related.map((e) => (
-              <li key={e.slug}>
-                <Link
-                  to="/events/$slug"
-                  params={{ slug: e.slug }}
-                  className="text-muted-foreground hover:text-accent flex items-baseline justify-between gap-4 text-sm transition-colors"
-                >
-                  <span>{e.title}</span>
-                  <span className="font-mono text-xs">{formatDate(e.date)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {related.length > 0 ? (
+          <section className="border-border/60 mt-20 border-t pt-10">
+            <h2 className="font-display text-xl font-semibold">Other events</h2>
+            <ul className="mt-6 space-y-3">
+              {related.map((e) => (
+                <li key={e.slug}>
+                  <Link
+                    to="/events/$slug"
+                    params={{ slug: e.slug }}
+                    className="text-muted-foreground hover:text-accent flex items-baseline justify-between gap-4 text-sm transition-colors"
+                  >
+                    <span>{e.title}</span>
+                    <span className="font-mono text-xs">{formatDate(e.date)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
       </div>
     </article>
   );
