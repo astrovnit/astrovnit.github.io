@@ -203,12 +203,24 @@ function TeamPage() {
             </div>
           </Reveal>
 
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12 justify-items-center">
-            {committeeHeads.map((member, i) => (
-              <Reveal key={member.id} delay={i * 70} className="w-full">
-                <MemberShowcase member={member} />
-              </Reveal>
-            ))}
+          <div className="space-y-12 sm:space-y-16">
+            {/* Disha Garpal (Technical Head) & Mrunal Jadhav (Head of Content Creation) */}
+            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-12 sm:grid-cols-2 lg:gap-16 justify-items-center">
+              {committeeHeads.slice(0, 2).map((member, i) => (
+                <Reveal key={member.id} delay={i * 70} className="w-full">
+                  <MemberShowcase member={member} />
+                </Reveal>
+              ))}
+            </div>
+
+            {/* Head of Design, Head of Multimedia, Head of Public Relations */}
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12 justify-items-center">
+              {committeeHeads.slice(2).map((member, i) => (
+                <Reveal key={member.id} delay={(i + 2) * 70} className="w-full">
+                  <MemberShowcase member={member} />
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
       </div>

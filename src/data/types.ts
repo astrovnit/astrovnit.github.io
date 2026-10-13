@@ -32,6 +32,8 @@ export interface AacEvent {
   related?: { label: string; to: string }[];
   image: string;
   placeholder: boolean;
+  organizedBy?: string;
+  displayDate?: string;
 }
 
 export type ProjectCategory =
@@ -112,4 +114,6 @@ export interface GalleryItem {
   description: string;
   image: string;
   placeholder: boolean;
+  event?: string;
+  location?: string;
 }

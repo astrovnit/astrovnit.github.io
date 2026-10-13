@@ -69,3 +69,4 @@ export default defineConfig({
     preset: process.env["NITRO_PRESET"] || "vercel",
   },
 });
+

@@ -7,7 +7,6 @@ import mrunalPhoto from "@/assets/team/mrunal.jpeg";
 import ramakarthikPhoto from "@/assets/team/ramakarthik.jpeg";
 import rishitPhoto from "@/assets/team/rishit.jpeg";
 import shravanPhoto from "@/assets/team/shravan.jpeg";
-import shreyashPhoto from "@/assets/team/shreyash.jpeg";
 import vpsinghPhoto from "@/assets/team/vpsingh.jpeg";
 import yasholaxmiPhoto from "@/assets/team/yasholaxmi.jpeg";
 
@@ -86,14 +85,6 @@ export const committeeHeads: CoreMember[] = [
     role: "Technical Head",
     tagline: "Debugging the universe.",
     photo: dishaPhoto,
-    objectPosition: "center",
-  },
-  {
-    id: "treas",
-    name: "Shreyash Nikam",
-    role: "Treasurer",
-    tagline: "Moon Walker, Post Reality.",
-    photo: shreyashPhoto,
     objectPosition: "center",
   },
   {

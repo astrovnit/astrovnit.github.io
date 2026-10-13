@@ -17,9 +17,14 @@ export function PlaceholderTag({ className }: { className?: string }) {
   );
 }
 
-export function Tag({ children }: { children: React.ReactNode }) {
+export function Tag({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className="border-border/70 text-muted-foreground rounded-full border px-2.5 py-0.5 font-mono text-[10px] tracking-[0.14em] uppercase">
+    <span
+      className={cn(
+        "border-border/70 text-muted-foreground rounded-full border px-2.5 py-0.5 font-mono text-[10px] tracking-[0.14em] uppercase",
+        className,
+      )}
+    >
       {children}
     </span>
   );
@@ -28,7 +33,7 @@ export function Tag({ children }: { children: React.ReactNode }) {
 export function EventCard({ event }: { event: AacEvent }) {
   return (
     <article className="card-lift group border-border/70 bg-card/60 flex h-full flex-col overflow-hidden rounded-xl border">
-      <Link to="/events/$slug" params={{ slug: event.slug }} className="block overflow-hidden">
+      <Link to="/events/$slug" params={{ slug: event.slug }} className="block overflow-hidden bg-black/40">
         <img
           src={event.image}
           alt=""
@@ -36,7 +41,7 @@ export function EventCard({ event }: { event: AacEvent }) {
           decoding="async"
           width={1280}
           height={853}
-          className="aspect-16/10 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+          className="aspect-16/10 w-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
         />
       </Link>
       <div className="flex flex-1 flex-col p-6">
@@ -58,7 +63,7 @@ export function EventCard({ event }: { event: AacEvent }) {
           <div className="flex items-center gap-2">
             <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
             <dt className="sr-only">Date</dt>
-            <dd>{formatDate(event.date)}</dd>
+            <dd>{event.displayDate || formatDate(event.date)}</dd>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-3.5 w-3.5" aria-hidden="true" />
@@ -86,7 +91,7 @@ export function EventCard({ event }: { event: AacEvent }) {
               rel="noreferrer noopener"
               className="border-border/70 hover:border-accent hover:text-accent ml-auto rounded-full border px-3.5 py-1.5 text-xs transition-colors"
             >
-              Register
+              {event.registrationUrl.includes("whatsapp") ? "Join Group" : "Register"}
             </a>
           ) : null}
         </div>
@@ -232,22 +237,38 @@ export function GalleryCard({ item, onOpen }: { item: GalleryItem; onOpen: () =>
     <button
       type="button"
       onClick={onOpen}
-      className="group border-border/70 relative block w-full overflow-hidden rounded-xl border text-left"
-      aria-label={`Open ${item.title}`}
+      className="card-lift group border-border/70 bg-card/60 relative block w-full overflow-hidden rounded-xl border text-left cursor-pointer"
+      aria-label={`Open photo from ${item.location || item.title}`}
     >
-      <img
-        src={item.image}
-        alt={item.description}
-        loading="lazy"
-        decoding="async"
-        width={1280}
-        height={853}
-        className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-      />
-      <span className="from-background/90 pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
-        <span className="font-display block text-sm font-medium">{item.title}</span>
-        <span className="text-muted-foreground block text-xs">{item.photographer}</span>
-      </span>
+      <div className="overflow-hidden aspect-16/10 w-full bg-secondary/30">
+        <img
+          src={item.image}
+          alt={item.description || item.location || item.title}
+          loading="lazy"
+          decoding="async"
+          width={1280}
+          height={853}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+        />
+      </div>
+      <div className="flex flex-col p-5 space-y-1.5 text-sm">
+        {item.event && (
+          <p className="leading-snug">
+            <span className="text-muted-foreground">Event: </span>
+            <span className="font-medium text-foreground">{item.event}</span>
+          </p>
+        )}
+        {item.location && (
+          <p className="leading-snug">
+            <span className="text-muted-foreground">Location: </span>
+            <span className="text-foreground">{item.location}</span>
+          </p>
+        )}
+        <p className="leading-snug">
+          <span className="text-muted-foreground">Clicked by: </span>
+          <span className="text-foreground">{item.photographer}</span>
+        </p>
+      </div>
     </button>
   );
 }
